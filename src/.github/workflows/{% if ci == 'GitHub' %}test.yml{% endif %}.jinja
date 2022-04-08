@@ -99,6 +99,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           persist-credentials: false
+      - name: Moving all on new folder
+        run: mkdir ${{ github.event.repository.name }} &&
+          mv ./__init__.py ./${{ github.event.repository.name }}/ &&
+          mv ./__manifest__.py ./${{ github.event.repository.name }}/ &&
+          mv $(ls -d */|grep -v ${{ github.event.repository.name }}) ./${{ github.event.repository.name }}
       - name: Install addons and dependencies
         run: oca_install_addons
       - name: Check licenses
