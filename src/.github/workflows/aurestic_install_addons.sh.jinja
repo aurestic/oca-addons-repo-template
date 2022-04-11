@@ -1,6 +1,5 @@
 #!/bin/bash
 
-env|grep GIT_PUSH_TOKEN
 DEFAULT_BRANCH="{{ odoo_version }}"
 if test -f "aures_dependencies.txt"; then
     cat aures_dependencies.txt|egrep -v "^#\s"|while IFS= read -r line; do
