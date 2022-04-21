@@ -2,7 +2,8 @@ name: Tagging
 
 on:
   push:
-    branches: ["{{ odoo_version }}"]
+    branches:
+      - "{{ odoo_version }}"
 
 jobs:
   tagging:

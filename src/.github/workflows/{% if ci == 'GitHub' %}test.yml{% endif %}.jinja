@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - "{{ odoo_version }}*"
+  push:
+    branches:
+      - "{{ odoo_version }}"
 
 {%
 set IMAGES = {
