@@ -40,15 +40,15 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v4
         with:
-          token: {{ "${{ secrets.GH_UPDATE_ODOO_TEMPLATE }}" }}
-          commit-message: '[UPD] Updating template to {{ "${{ steps.copier.outputs.VERSION }}" }}'
+          token: ${{ secrets.GH_UPDATE_ODOO_TEMPLATE }}
+          commit-message: '[UPD] Updating template to ${{ steps.copier.outputs.VERSION }}'
           committer: GitHub <noreply@github.com>
-          author: {{ "${{ github.actor }}" }} <{{ "${{ github.actor }}" }}@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           branch: gh/addons-template-update
           delete-branch: true
           title: '[UPD] Odoo module template'
           body: |
-            Updating to version {{ "${{ steps.copier.outputs.VERSION }}" }}
+            Updating to version ${{ steps.copier.outputs.VERSION }}
 
             Automated changes by [Aurestic Github Action](https://github.com/aurestic/oca-addons-repo-template/blob/master/src/.github/workflows/template.yml)
           labels: |
