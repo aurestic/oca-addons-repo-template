@@ -1,0 +1,62 @@
+name: Update Template
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+
+jobs:
+  update:
+    name: Update Odoo Module Template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Installing copier
+        run: |
+         pipx install copier
+         pipx install pre-commit
+         pipx ensurepath
+
+      - name: Updating template
+        id: copier
+        shell: bash
+        run: |
+          copier -f update > /dev/null 2>&1
+          VERSION=$(cat .copier-answers.yml|grep _commit|awk '{print $2}')
+          echo "::set-output name=VERSION::$VERSION"
+
+      - name: Check for uncommitted changes
+        id: check-changes
+        shell: bash
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            echo "::set-output name=CHANGES::1"
+          else
+            echo "::set-output name=CHANGES::0"
+          fi
+
+      - name: Create Pull Request
+        if: steps.check-changes.outputs.CHANGES == 1
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: {{ "${{ secrets.GH_UPDATE_ODOO_TEMPLATE }}" }}
+          commit-message: '[UPD] Updating template to {{ "${{ steps.copier.outputs.VERSION }}" }}'
+          committer: GitHub <noreply@github.com>
+          author: {{ "${{ github.actor }}" }} <{{ "${{ github.actor }}" }}@users.noreply.github.com>
+          branch: gh/addons-template-update
+          delete-branch: true
+          title: '[UPD] Odoo module template'
+          body: |
+            Updating to version {{ "${{ steps.copier.outputs.VERSION }}" }}
+
+            Automated changes by [Aurestic Github Action](https://github.com/aurestic/oca-addons-repo-template/blob/master/src/.github/workflows/template.yml)
+          labels: |
+            template
+            automated pr
+          reviewers: |
+            almumu
+            zamberjo
+            JordiToledo
+            carlosbej2
+          draft: false
