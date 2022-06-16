@@ -56,7 +56,6 @@ jobs:
             automated pr
           reviewers: |
             almumu
-            zamberjo
             JordiToledo
             carlosbej2
           draft: false
