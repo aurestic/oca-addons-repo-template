@@ -12,6 +12,7 @@ _envops:
 
 _tasks:
   - rm -f {% if ci != "Travis" %}.travis.yml{% endif %} .t2d.yml
+  - chmod a+x .github/workflows/aurestic_install_addons.sh
 
 _migrations:
   - version: v1.3.6
@@ -20,7 +21,7 @@ _migrations:
 
 odoo_version:
   type: float
-  default: 15.0
+  default: 14.0
   choices:
     - 10.0
     - 11.0
@@ -32,14 +33,14 @@ odoo_version:
 
 org_slug:
   type: str
-  default: OCA
+  default: aurestic
   help:
     What's the organization slug? If you are creating
     https://github.com/OCA/server-tools, then write "OCA" here.
 
 org_name:
   type: str
-  default: Odoo Community Association (OCA)
+  default: Aures Tic
   help:
     Tell me the Organization name. It's supposed to be human-readable. It will be used
     in the author key of the __manifest__ files.
@@ -56,12 +57,12 @@ repo_name:
     Tell me the project name. It's supposed to be human-readable. So, server-tools
     project could be named like "Tools for server environment(s)"
 
-repo_website:
-  type: str
-  default: "https://github.com/{{ org_slug }}/{{ repo_slug }}"
-  help:
-    Tell me the project website. It will be used in the website key of the __manifest__
-    files.
+# repo_website:
+#   type: str
+#   default: "https://github.com/{{ org_slug }}/{{ repo_slug }}"
+#   help:
+#     Tell me the project website. It will be used in the website key of the __manifest__
+#     files.
 
 repo_description:
   type: str
@@ -69,7 +70,7 @@ repo_description:
 
 ci:
   type: str
-  default: Travis
+  default: GitHub
   choices:
     - Travis
     - GitHub
