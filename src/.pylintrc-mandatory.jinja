@@ -4,6 +4,7 @@
 [MASTER]
 load-plugins=pylint_odoo
 score=n
+ignore=.github,.prettierrc.yml,.copier-answers.yml,.eslintrc.yml
 
 [ODOOLINT]
 {%- if odoo_version < 16 %}
@@ -44,9 +45,7 @@ enable=anomalous-backslash-in-string,
     license-allowed,
     manifest-author-string,
     manifest-deprecated-key,
-    manifest-required-author,
     manifest-required-key,
-    manifest-version-format,
     method-compute,
     method-inverse,
     method-required-super,
@@ -85,7 +84,6 @@ enable=anomalous-backslash-in-string,
     invalid-commit,
     manifest-maintainers-list,
     missing-newline-extrafiles,
-    missing-readme,
     missing-return,
     odoo-addons-relative-import,
     old-api7-method-defined,
