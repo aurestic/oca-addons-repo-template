@@ -1,0 +1,30 @@
+#!/bin/bash
+
+installRequirementsTxt() {
+    if [[ -f "rebel-requirements.txt" ]]; then
+        pip uninstall -r rebel-requirements.txt;
+    fi
+    if [[ -f "requirements.txt" ]]; then
+        pip install -r requirements.txt;
+    fi
+}
+
+
+DEFAULT_BRANCH="{{ odoo_version }}"
+if test -f "aures_dependencies.txt"; then
+    cat aures_dependencies.txt|egrep -v "^#\s"|while IFS= read -r line; do
+        cd ${module}
+        installRequirementsTxt
+        cd ..
+    done
+fi
+
+if test -f "OCA_own_dependencies.txt"; then
+    cat OCA_own_dependencies.txt|egrep -v "^#\s"|while IFS= read -r line; do
+        cd ${repo}
+        installRequirementsTxt
+        cd ..
+    done
+fi
+
+installRequirementsTxt
