@@ -7,10 +7,10 @@ on:
   push:
     branches:
       - "{{ odoo_version }}"
-      - "{{ odoo_version }}-ocabot-*"
 
 jobs:
   pre-commit:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
