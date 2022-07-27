@@ -1,0 +1,44 @@
+#!/bin/bash
+
+DEFAULT_BRANCH="{{ odoo_version }}"
+if test -f "aures_dependencies.txt"; then
+    cat aures_dependencies.txt|egrep -v "^#\s"|while IFS= read -r line; do
+        module=$(echo $line|awk '{print $1}');
+        branch=$(echo $line|awk '{print $2}');
+        rev=$(echo $line|awk '{print $3}');
+        git clone \
+            -b ${branch:-$DEFAULT_BRANCH} \
+            --depth 1 \
+            --no-tags \
+            https://x-access-token:${GIT_PUSH_TOKEN}@github.com/aurestic/${module} \
+            ${module};
+        if [[ "$rev" != "" ]];then
+            cd ${module}
+            git reset --hard ${rev}
+            cd ..
+        fi
+    done
+fi
+
+if test -f "OCA_own_dependencies.txt"; then
+    cat OCA_own_dependencies.txt|egrep -v "^#\s"|while IFS= read -r line; do
+        repo=$(echo $line|awk '{print $1}');
+        module=$(echo $line|awk '{print $2}');
+        branch=$(echo $line|awk '{print $3}');
+        rev=$(echo $line|awk '{print $4}');
+        git clone \
+            -b ${branch:-$DEFAULT_BRANCH} \
+            --depth 1 \
+            --no-tags \
+            https://github.com/aurestic/${repo} \
+            ${repo};
+        if [[ "$rev" != "" ]];then
+            cd ${repo}
+            git reset --hard ${rev}
+            cd ..
+        fi
+        echo "Making '${module}' available..."
+        mv ${repo}/${module} .
+        rm -fr ${repo};
+    done
+fi
