@@ -74,12 +74,7 @@ ci:
 
 odoo_test_flavor:
   type: str
-  default: |-
-    {% if odoo_version < 13.0 -%}
-        OCB
-    {%- else -%}
-        Both
-    {%- endif %}
+  default: Odoo
   choices:
     - Odoo
     - OCB

@@ -13,6 +13,7 @@ installRequirementsTxt() {
 DEFAULT_BRANCH="{{ odoo_version }}"
 if test -f "aures_dependencies.txt"; then
     cat aures_dependencies.txt|egrep -v "^#\s"|while IFS= read -r line; do
+        module=$(echo $line|awk '{print $1}');
         cd ${module}
         installRequirementsTxt
         cd ..
@@ -21,6 +22,7 @@ fi
 
 if test -f "OCA_own_dependencies.txt"; then
     cat OCA_own_dependencies.txt|egrep -v "^#\s"|while IFS= read -r line; do
+        repo=$(echo $line|awk '{print $1}');
         cd ${repo}
         installRequirementsTxt
         cd ..
