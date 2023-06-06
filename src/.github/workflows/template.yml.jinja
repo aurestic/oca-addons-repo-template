@@ -20,22 +20,22 @@ jobs:
          pipx install pre-commit
          pipx ensurepath
 
-      - name: Updating template
-        id: copier
-        shell: bash
-        run: |
-          copier -f update > /dev/null 2>&1
-          VERSION=$(cat .copier-answers.yml|grep _commit|awk '{print $2}')
-          echo "::set-output name=VERSION::$VERSION"
+      - name: Update template
+        id: update-template
+        run: copier update --defaults --UNSAFE
+
+      - name: Set version template
+        id: version-template
+        run: echo "VERSION=$(cat .copier-answers.yml|grep _commit|awk '{print $2}')" >> "$GITHUB_OUTPUT"
 
       - name: Check for uncommitted changes
         id: check-changes
         shell: bash
         run: |
           if [[ `git status --porcelain` ]]; then
-            echo "::set-output name=CHANGES::1"
+            echo "CHANGES=1" >> "$GITHUB_OUTPUT"
           else
-            echo "::set-output name=CHANGES::0"
+            echo "CHANGES=0" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Pull Request
@@ -44,14 +44,14 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: {% raw %}${{ secrets.GH_UPDATE_ODOO_TEMPLATE }}{% endraw %}
-          commit-message: {% raw %}'[UPD] Updating template to ${{ steps.copier.outputs.VERSION }}'{% endraw %}
+          commit-message: {% raw %}'[UPD] Updating template to ${{ steps.version-template.outputs.VERSION }}'{% endraw %}
           committer: GitHub <noreply@github.com>
           author: {% raw %}${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>{% endraw %}
           branch: gh/addons-template-update
           delete-branch: true
           title: '[UPD] Odoo module template'
           body: {% raw %}|
-            Updating to version ${{ steps.copier.outputs.VERSION }}
+            Updating to version ${{ steps.version-template.outputs.VERSION }}
 
             Automated changes by [Aurestic Github Action](https://github.com/aurestic/oca-addons-repo-template/blob/master/src/.github/workflows/template.yml){% endraw %}
           labels: |
@@ -60,5 +60,4 @@ jobs:
           reviewers: |
             almumu
             JordiToledo
-            carlosbej2
           draft: false
