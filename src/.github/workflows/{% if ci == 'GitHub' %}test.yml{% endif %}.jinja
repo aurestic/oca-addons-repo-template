@@ -154,6 +154,8 @@ jobs:
       {%- endif %}
       {% raw -%}
       - name: Update .pot files
-        run: oca_export_and_push_pot https://x-access-token:${{ secrets.GIT_PUSH_TOKEN }}@github.com/${{ github.repository }}
+        run: ./.github/workflows/au_exportpot.sh ${{ github.event.repository.name }} https://x-access-token:${{ secrets.GIT_PUSH_TOKEN }}@github.com/${{ github.repository }}
+        env:
+          GIT_PUSH_TOKEN: ${{ secrets.GIT_PUSH_TOKEN }}
       {%- endraw %}
         if: {{ "${{" }} matrix.makepot == 'true' && github.event_name == 'push' && github.repository_owner == '{{ org_slug }}' {{ "}}" }}
