@@ -8,6 +8,7 @@ _tasks:
   - chmod a+x .github/workflows/au_install_addons.sh
   - chmod a+x .github/workflows/au_install_requirements.sh
   - chmod a+x .github/workflows/au_exportpot.sh
+  - pipx run whool init
 
 _migrations:
   - version: v1.3.6
