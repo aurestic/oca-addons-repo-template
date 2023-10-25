@@ -124,6 +124,7 @@ jobs:
       - name: Moving all on new folder
         run: mkdir {{ "${{ github.event.repository.name }}" }} &&
           mv ./*.py ./{{ "${{ github.event.repository.name }}" }}/ &&
+          mv ./pyproject.toml ./{{ "${{ github.event.repository.name }}" }}/ &&
           mv $(ls -d */|grep -v {{ "${{ github.event.repository.name }}" }}) ./{{ "${{ github.event.repository.name }}" }}
       - name: Install aurestic addons
         run: ./.github/workflows/au_install_addons.sh
