@@ -142,3 +142,12 @@ repos:
         args:
           - --rcfile=.pylintrc-mandatory
         additional_dependencies: *pylint_deps
+  - repo: https://github.com/aurestic/m2r2
+    rev: 7fc388a39a851d597e1e59016d22d9a1423fec24
+    hooks:
+      - id: m2r2
+        always_run: true
+        args:
+          - --overwrite
+          - README.md
+        verbose: true
