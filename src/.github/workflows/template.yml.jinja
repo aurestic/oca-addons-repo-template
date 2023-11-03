@@ -47,7 +47,7 @@ jobs:
           commit-message: {% raw %}'[UPD] Updating template to ${{ steps.version-template.outputs.VERSION }}'{% endraw %}
           committer: GitHub <noreply@github.com>
           author: {% raw %}${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>{% endraw %}
-          branch: gh/addons-template-update
+          branch: gh/addons-template-update-{{ odoo_version }}
           delete-branch: true
           title: '[UPD] Odoo module template'
           body: {% raw %}|
