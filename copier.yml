@@ -162,6 +162,21 @@ github_enable_codecov:
   help: GitHub action runs codecov/codecov-action?
   when: *ci_is_github
 
+github_enable_customtests:
+  type: bool
+  default: no
+  help: Custom tests? as  performance, stress tests... see nubearentcar
+  when: *ci_is_github
+
+github_customtests_extra_env:
+  type: yaml
+  default: {}
+  help: |
+    Any extra environment variables to inject into the custom tests
+
+    Example: {"KEY": "VALUE"}
+  when: "{{ github_enable_customtests }}"
+
 github_enable_makepot:
   type: bool
   default: yes
