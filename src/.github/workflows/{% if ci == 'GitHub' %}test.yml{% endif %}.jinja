@@ -91,6 +91,8 @@ jobs:
             name: test with OCB
             {%- endif %}
             makepot: "{{ github_enable_makepot | bool | lower }}"
+            makecoverage: "{{ github_enable_codecov | bool | lower }}"
+            customtests: "{{ github_enable_customtests | bool | lower }}"
         {%- endfor %}
             {%- if odoo_test_flavor in ["Odoo", "Both"] %}
           - container: {{ IMAGES["odoo"][odoo_version] }}
@@ -103,6 +105,8 @@ jobs:
             name: test with OCB
             {%- endif %}
             makepot: "{{ github_enable_makepot | bool | lower }}"
+            makecoverage: "{{ github_enable_codecov | bool | lower }}"
+            customtests: "{{ github_enable_customtests | bool | lower }}"
         {%- else %}
         {#- If all modules can get along, we test and generate .pot all at once #}
         include:
@@ -115,6 +119,8 @@ jobs:
             name: test with OCB
             {%- endif %}
             makepot: "{{ github_enable_makepot | bool | lower }}"
+            makecoverage: "{{ github_enable_codecov | bool | lower }}"
+            customtests: "{{ github_enable_customtests | bool | lower }}"
         {%- endif %}
     services:
       postgres:
@@ -166,19 +172,44 @@ jobs:
         {%- endif %}
       - name: Initialize test db
         run: oca_init_test_database
-        if: {{ "${{" }} github.event_name != 'push' {{ "}}" }}
+        if: {{ "${{" }} github.event_name != 'push' || matrix.makecoverage == 'true' {{ "}}" }}
       - name: Run tests
         run: oca_run_tests
-        if: {{ "${{" }} github.event_name != 'push' {{ "}}" }}
+        if: {{ "${{" }} github.event_name != 'push' || matrix.makecoverage == 'true' {{ "}}" }}
+      {%- if github_enable_customtests %}
+      - name: Run custom project tests
+        id: custom_tests
+        run: ./.github/workflows/au_run_tests.sh {{ "${{" }} github.event.repository.name {{ "}}" }} {{ "${{" }} github.event_name {{ "}}" }}
+        env:
+          GIT_PUSH_TOKEN: {{ "${{" }} secrets.GIT_PUSH_TOKEN {{ "}}" }}
+          {%- for key, value in github_customtests_extra_env.items() %}
+          {{ key }}: {{ value }}
+          {%- endfor %}
+        if: {{ "${{" }} matrix.customtests == 'true' && github.event_name != 'push' && github.repository_owner == 'aurestic' {{ "}}" }}
+      {%- endif %}
       {%- if github_enable_codecov %}
-      - uses: codecov/codecov-action@v4
-        with:
-          token: {{"${{ secrets.CODECOV_TOKEN }}"}}
+      - name: Exporting coverage report
+        run: coverage xml -o coverage.xml
+      - name: Undo coverage.xml structure directories
+        run: sed -i "s,{{ "${{" }} github.event.repository.name {{ "}}" }}/,,g" coverage.xml
       {%- endif %}
       {% raw -%}
       - name: Update .pot files
         run: ./.github/workflows/au_exportpot.sh ${{ github.event.repository.name }} https://x-access-token:${{ secrets.GIT_PUSH_TOKEN }}@github.com/${{ github.repository }}
         env:
           GIT_PUSH_TOKEN: ${{ secrets.GIT_PUSH_TOKEN }}
+          MAKECOVERAGE: ${{ matrix.makecoverage == 'true' }}
       {%- endraw %}
         if: {{ "${{" }} matrix.makepot == 'true' && github.event_name == 'push' && github.repository_owner == '{{ org_slug }}' {{ "}}" }}
+      {%- if github_enable_codecov %}
+      - name: Returning original directory structure
+        run: mv ./{{ "${{" }} github.event.repository.name {{ "}}" }}/* ./ &&
+          rmdir ./{{ "${{" }} github.event.repository.name {{ "}}" }} &&
+          rm test-requirements.txt
+        if: {{ "${{" }} matrix.makepot != 'true' || github.event_name != 'push' && github.repository_owner == 'aurestic' {{ "}}" }}
+      - uses: codecov/codecov-action@v4
+        with:
+          token: {{ "${{" }} secrets.CODECOV_TOKEN {{ "}}" }}
+          files: ./coverage.xml
+          {# verbose: true #}
+      {%- endif %}
