@@ -2,8 +2,9 @@
 
 set -x
 
+pip install click-odoo-contrib;
+
 if [[ "${MAKECOVERAGE}" = "false" ]];then
-    pip install click-odoo-contrib;
     oca_wait_for_postgres
     ADDONS=$(manifestoo --select-addons-dir ${ADDONS_DIR} list-depends --separator=,)
     if [ -n "${ADDONS}" ]; then
