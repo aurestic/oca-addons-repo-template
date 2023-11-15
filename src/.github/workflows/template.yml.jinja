@@ -44,12 +44,12 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: {% raw %}${{ secrets.GH_UPDATE_ODOO_TEMPLATE }}{% endraw %}
-          commit-message: {% raw %}'[UPD] Updating template to ${{ steps.version-template.outputs.VERSION }}'{% endraw %}
+          commit-message: {% raw %}'[skip actions][UPD] Updating template to ${{ steps.version-template.outputs.VERSION }}'{% endraw %}
           committer: GitHub <noreply@github.com>
           author: {% raw %}${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>{% endraw %}
           branch: gh/addons-template-update-{{ odoo_version }}
           delete-branch: true
-          title: '[UPD] Odoo module template'
+          title: '[skip actions][UPD] Odoo module template'
           body: {% raw %}|
             Updating to version ${{ steps.version-template.outputs.VERSION }}
 
