@@ -40,9 +40,7 @@ if test -f "OCA_own_dependencies.txt"; then
         fi
         echo "Making '${module}' available..."
         mv ${repo}/${module} .
-        pushd ${module}
-        pipx run whool init;
-        popd
+        cp $(basename $(pwd))/pyproject.toml ${module}/pyproject.toml
         rm -fr ${repo};
     done
 fi
