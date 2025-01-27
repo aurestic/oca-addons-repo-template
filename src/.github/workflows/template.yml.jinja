@@ -12,7 +12,7 @@ jobs:
     name: Update Odoo Module Template
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Installing copier
         run: |
@@ -41,12 +41,10 @@ jobs:
       - name: Create Pull Request
         if: steps.check-changes.outputs.CHANGES == 1
         id: cpr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: {% raw %}${{ secrets.GH_UPDATE_ODOO_TEMPLATE }}{% endraw %}
           commit-message: {% raw %}'[skip actions][UPD] Updating template to ${{ steps.version-template.outputs.VERSION }}'{% endraw %}
-          {# committer: GitHub <noreply@github.com> #}
-          {# author: {% raw %}${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>{% endraw %} #}
           branch: gh/addons-template-update-{{ odoo_version }}
           delete-branch: true
           title: '[skip actions][UPD] Odoo module template'
