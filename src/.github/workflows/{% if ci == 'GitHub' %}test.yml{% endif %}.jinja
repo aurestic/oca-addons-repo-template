@@ -134,7 +134,7 @@ jobs:
           POSTGRES_PASSWORD: odoo
           POSTGRES_DB: odoo
         ports:
-          - 5432:5432
+          - 5432
     {%- if env %}
     env:
       {%- for key, value in env.items() %}
