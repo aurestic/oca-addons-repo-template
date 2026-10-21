@@ -1,0 +1,29 @@
+# Etiqueta automática de la plantilla: en cada push a master crea la siguiente
+# versión (v1.29.0.3 -> v1.29.0.4). Copier ("Update Template" en los repos) solo
+# aplica versiones etiquetadas, así que sin esto los cambios no llegan a los repos.
+# Este fichero está en la raíz del repo, fuera de src/: no se copia a los repos.
+name: Tagging
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  tagging:
+    name: Bump tag
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create an incremental tag
+        uses: aurestic/incremental-tag@master
+        with:
+          message: Bump version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
