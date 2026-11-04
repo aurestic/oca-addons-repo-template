@@ -266,8 +266,11 @@ repos:
     rev: {{ repo_rev.setuptools_odoo }}
     hooks:
       - id: setuptools-odoo-make-default
+        # setuptools 84 eliminó pkg_resources, que setuptools-odoo importa
+        additional_dependencies: ["setuptools<81"]
       {%- if generate_requirements_txt %}
       - id: setuptools-odoo-get-requirements
+        additional_dependencies: ["setuptools<81"]
         args:
           - --output
           - requirements.txt
